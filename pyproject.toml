@@ -1,0 +1,55 @@
+[project]
+name = "pyMCL"
+requires-python = ">=3.10"
+description = "A package to perform the Markov Cluster Algorithm (MCL)"
+readme = "README.md"
+authors = [{name = "Tristen Jay Mier"}]
+license = {"file" = "LICENSE.rst"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+  "numpy >= 2.0",
+]
+
+version = "0.1.0"
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+]
+
+[project.urls]
+homepage = "https://www.example.com"  # Update with actual homepage URL
+repository = "https://github.com/TristenJayMier/pyMCL"  # Update with actual repository URL
+documentation = "https://www.example.com/docs"  # Update with actual documentation URL
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "tests",
+  "doc",
+  "environment.yml",
+  "setup_ccd.py",
+  ".git*",
+]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/pyMCL/version.py"
+
+[build-system]
+requires = [
+    "hatchling",
+    "hatch-vcs == 0.4",
+    "oldest-supported-numpy",
+]
+build-backend = "hatchling.build"
