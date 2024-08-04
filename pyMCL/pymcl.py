@@ -45,8 +45,11 @@ def markov_cluster(
     ValueError if matrix is not a square matrix.
 
     """
-    if not matrix:
-        return []
+    # check for pd dataframe
+    is_dataframe = False
+    if isinstance(matrix, pd.DataFrame):
+        is_dataframe = True
+        matrix, index_labels = _process_dataframe(matrix)
 
     for i in (expansion, inflation):
         if i <= 1:
@@ -54,7 +57,7 @@ def markov_cluster(
             raise ValueError(msg)
 
     if matrix.shape[0] != matrix.shape[1]:
-        msg = f"Input matrix must be a square matrix. Got shape {matrix.shape}"
+        msg = f"Input matrix must be a square array. Got shape {matrix.shape}"
         raise ValueError(msg)
 
     # Add self loops
@@ -79,19 +82,23 @@ def markov_cluster(
     # Last pruning
     matrix = _prune(matrix, pruning_threshold)
 
+    # Get clusters
     clusters = _get_clusters(matrix)
-
     clusters = _resolve_overlapping_clusters(clusters, keep_overlap=keep_overlap)
 
     # convert list of frozensets to list of sets
     clusters = [set(clust) for clust in clusters]
 
+    # replace indices with intial labels
+    if is_dataframe:
+        clusters = [{index_labels[i] for i in clust} for clust in clusters]
+
     return clusters
 
-def process_dataframe(df: pd.DataFrame) -> tuple[np.ndarray, list]:
+def _process_dataframe(df: pd.DataFrame) -> tuple[np.ndarray, list]:
     """
     Convert a pandas Dataframe to a numpy array and a list mapping the inital
-    indices of the matrix.
+    indices of the df.
 
     Parameters
     ----------
@@ -101,54 +108,53 @@ def process_dataframe(df: pd.DataFrame) -> tuple[np.ndarray, list]:
     Returns
     -------
     np.ndarray
-        The numpy array of the matrix.
+        The numpy array of the df.
     list
-        The mapping of the initial indices of the matrix.
+        The mapping of the initial indices of the df.
 
     """
     # reject 3x3 matrices or smaller
-    if df.shape[0] < 4:
+    min_shape = [4, 3]
+    if df.shape[0] < min_shape[0]:
         msg = """Input dataframe too small. Must be at least 4x4 for NxN matices 
-                or 4x3 for Nx3 matrices. Got shape {matrix.shape}"""
+                or 4x3 for Nx3 matrices. Got shape {df.shape}"""
         raise ValueError(msg)
 
     # Pivot the DataFrame if it has 3 columns
-    if (df.shape[1] == 3):
-        # pivot the DataFrame into a square matrix
-        df_pivot = df.pivot_table(index=df[0,:],
-                                  columns=df[1,:],
-                                  values=df[2,:],
-                                  fill_value=0)
+    if df.shape[1] == 3:
+        # Use iloc to select the first, second, and third columns
+        df_pivot = df.pivot_table(index=df.columns[0],
+                                  columns=df.columns[1],
+                                  values=df.columns[2]).fillna(0)
 
-        # add missing comparison values
-        for col in df_pivot['B'].unique():
-            if col not in df_pivot.index:
-                df_pivot.loc[col] = 0.
-        for row in df_pivot['A'].unique():
-            if row not in df_pivot.columns:
-                df_pivot[row] = 0.
+        # Get all unique values from both the first and second columns
+        col_0_values = set(df.iloc[:, 0])
+        col_1_values = set(df.iloc[:, 1])
+        all_values = col_0_values.union(col_1_values)
 
-        # sort the columns and index
-        df = df_pivot.sort_index(axis=0).sort_index(axis=1)
-    # check shape of the matrix
-    elif matrix.shape[0] != matrix.shape[1]:
-        msg = f"Input dataframe must have a shape of NxN or Nx3. Got shape {matrix.shape}"
+        # Reindex to include all unique values
+        df = df_pivot.reindex(index=all_values, columns=all_values, fill_value=0)
+
+    # check shape of the df
+    elif df.shape[0] != df.shape[1]:
+        msg = f"Input dataframe must have a shape of NxN or Nx3. Got shape {df.shape}"
         raise ValueError(msg)
 
     # dataframe columns and index
-    columns = matrix.columns.tolist()
-    indices = matrix.index.tolist()
+    df = df.sort_index(axis=0).sort_index(axis=1)
+    columns = df.columns.tolist()
+    indices = df.index.tolist()
 
-    if columns != indices:
-        msg = "For dataframes of shape NxN, the index labels must match the column names."
+    if columns.sort() != indices.sort():
+        msg = """
+            For dataframes of shape NxN, the index labels must match the column names.
+            """
         raise ValueError(msg)
 
     # Convert the DataFrame to a numpy array
-    matrix = matrix.to_numpy()
+    matrix = df.to_numpy()
 
     return matrix, columns
-
-process_dataframe(df)
 
 def _add_self_loops(matrix: np.ndarray)->np.ndarray:
 
