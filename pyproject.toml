@@ -36,6 +36,10 @@ classifiers = [
 test = [
   "pytest",
 ]
+docs = [
+    "sphinx",
+    "sphinx_rtd_theme",
+]
 
 [project.urls]
 repository = "https://github.com/tjmier/pyMCL"
