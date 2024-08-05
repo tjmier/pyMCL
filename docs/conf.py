@@ -23,6 +23,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
+    "sphinx_copybutton",
 ]
 
 templates_path = ['_templates']
@@ -35,3 +36,16 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_context = {
+    "sidebar_external_links_caption": "Links",
+    "sidebar_external_links": [
+        (
+            '<i class="fa fa-github fa-fw"></i> Source code',
+            "https://github.com/tjmier/pyMCL",
+        ),
+        (
+            '<i class="fa fa-bug fa-fw"></i> Issue tracker',
+            "https://github.com/tjmier/pyMCL/issues",
+        ),
+    ],
+}

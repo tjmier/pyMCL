@@ -17,7 +17,6 @@ dependencies = [
   "pandas >= 2.0",
 ]
 
-
 readme = "README.md"
 license = {"file" = "LICENSE"}
 
@@ -39,6 +38,7 @@ test = [
 docs = [
     "sphinx",
     "sphinx_rtd_theme",
+    "sphinx-copybutton",
 ]
 
 [project.urls]

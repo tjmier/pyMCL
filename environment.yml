@@ -6,6 +6,10 @@ dependencies:
   - python>=3.9
 # Package building
   - hatch
+# Documentaion
+  - sphinx
+  - sphinx_rtd_theme
+  - sphinx-copybutton
 # pyMCL dependencies
   - numpy=2
   - pandas=2
