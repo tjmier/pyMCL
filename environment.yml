@@ -1,0 +1,13 @@
+name: pyMCL
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python>=3.9
+# Package building
+  - hatch
+# pyMCL dependencies
+  - numpy=2
+  - pandas=2
+# Optional testing dependencies
+  - pytest

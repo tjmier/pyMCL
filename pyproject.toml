@@ -14,7 +14,9 @@ keywords = [
 requires-python = ">=3.9"
 dependencies = [
   "numpy >= 2.0",
+  "pandas >= 2.0",
 ]
+
 
 readme = "README.md"
 license = {"file" = "LICENSE"}
@@ -41,15 +43,11 @@ documentation = "https://www.example.com/docs"
 
 [tool.ruff]
 
-# The target Python version for the code.
 target-version = "py311"
-
-# The list of rules to include. "ALL" means include all the rules, including new ones.
 select = [
     "ALL", # include all the rules, including new ones
 ]
-
-# The list of rules to ignore, categorized for clarity.
+# The list of rules to ignore.
 ignore = [
     "COM812", # ignore missing trailing comma in a single-line list.
     "D103",   # ignore missing docstring in public function.
@@ -61,13 +59,26 @@ ignore = [
     "PLR0913", # ignore multiple imports on one line
 
 ]
-
 # List of rules to ignore in testing directory
 [tool.ruff.lint.per-file-ignores]
-
 "tests/*" = [
-    "S101", # ignore use of assert
+    "S101",   # ignore use of assert
     "ANN001", # ignore missing type annotation for self in method
-    'ANN201',  # ignore missing type annotation for self in method
-    "E501", # ignore line too long
+    'ANN201', # ignore missing type annotation for self in method
+    "E501",   # ignore line too long
+]
+"docs/*" = [
+    "ALL", # ignore all rules in docs
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "tests",
+  "environment.yaml",
+  # .github, .gitignore, .gitattributes
+  ".git*",
 ]

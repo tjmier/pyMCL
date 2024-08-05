@@ -14,8 +14,7 @@ def markov_cluster(
     expansion: float = 2,
     pruning_threshold: float = 1e-5,
     convergence_threshold: float = 0.001,
-    *,
-    keep_overlap: bool = False
+    overlaps: str = "resolve"
 ) -> list:
     """
     Perform Markov Cluster Algorithm (MCL) on a given numpy matrix matrix.
@@ -24,25 +23,28 @@ def markov_cluster(
     ----------
     matrix : np.darray
         A square numpy matrix.
-    inflation : float, optional
-        The inflation parameter, by default 2.
-    expansion : float, optional
-        The expansion parameter, by default 2.
-    pruning_threshold : float, optional
-        The pruning threshold, by default 1e-5.
-    convergence_threshold : float, optional
-        The convergence threshold, by default 0.001.
-    keep_overlap : bool, optional
-        Whether to keep overlapping clusters in the final result, by default False.
+    inflation : float, optional, default=2
+        The inflation parameter.
+    expansion : float, optional, default=2
+        The expansion parameter.
+    pruning_threshold : float, optional, default=1e-5
+        The pruning threshold.
+    convergence_threshold : float, optional, default=1e-3
+        The convergence threshold.
+    overlaps : {"resolve", "keep"}, optional, default="resolve"
+        Whether to resolve overlapping clusters in the final result
+        or keep the the overlaps.
 
     Returns
     -------
-    List of sets containing nodes for each cluster.
+    List
+        List of sets containing nodes for each cluster.
 
     Raises
     ------
-    ValueError if inflation or expansion is less than or equal to 1.
-    ValueError if matrix is not a square matrix.
+    ValueError
+        If inflation or expansion is less than or equal to 1.
+        If matrix is not a square matrix.
 
     """
     # check for pd dataframe
@@ -55,6 +57,10 @@ def markov_cluster(
         if i <= 1:
             msg = "Inflation and expansion values must be greater than 1"
             raise ValueError(msg)
+
+    if overlaps not in ["resolve", "keep"]:
+        msg = "Overlaps must be either 'resolve' or 'keep'"
+        raise ValueError(msg)
 
     if matrix.shape[0] != matrix.shape[1]:
         msg = f"Input matrix must be a square array. Got shape {matrix.shape}"
@@ -84,7 +90,8 @@ def markov_cluster(
 
     # Get clusters
     clusters = _get_clusters(matrix)
-    clusters = _resolve_overlapping_clusters(clusters, keep_overlap=keep_overlap)
+    clusters = _resolve_overlapping_clusters(clusters,
+                                             keep_overlap = overlaps == "keep")
 
     # convert list of frozensets to list of sets
     clusters = [set(clust) for clust in clusters]
@@ -157,7 +164,6 @@ def _process_dataframe(df: pd.DataFrame) -> tuple[np.ndarray, list]:
     return matrix, columns
 
 def _add_self_loops(matrix: np.ndarray)->np.ndarray:
-
     # replace diagnol with 0
     np.fill_diagonal(matrix, 0.)
     #fill diagnol with max value in col
@@ -249,7 +255,7 @@ def clusters_to_adjacency(clusters: list) -> pd.DataFrame | np.ndarray:
 
     Returns
     -------
-    Union[pd.DataFrame, np.ndarray]
+    pd.DataFrame or np.ndarray
         The corresponding adjacency matrix for the list of clusters as a pandas
         DataFrame if the clusters contain strings, or as a numpy ndarray if the
         clusters contain only integers.

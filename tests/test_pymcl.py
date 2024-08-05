@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 # Testing module
-from pyMCL import pymcl as mcl
+from my_pyMCL import pymcl as mcl
 
 # Example matrices and results from Dongen 2008 https://doi.org/10.1137/040608635
 test1_array = np.array(
@@ -136,7 +136,7 @@ test2_overlap_clusters_str = [
 )
 
 def test_resolve_overlapping_clusters(input_data, expected):
-    result = mcl.markov_cluster(input_data, keep_overlap=True)
+    result = mcl.markov_cluster(input_data, overlaps="keep")
     assert result == sorted(expected, key=len, reverse=True)
 
 cluster1 = [{0, 1, 2}, {3, 4}]

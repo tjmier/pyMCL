@@ -1,6 +1,0 @@
-name: pyMCL
-channels:
-  - defaults
-dependencies:
-  - python=3
-  - numpy=2
