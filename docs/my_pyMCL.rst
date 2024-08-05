@@ -1,9 +1,7 @@
-Documentation
+API Reference
 =================
 
-main module
-----------
-.. automodule:: pymcl
+.. automodule:: my_pyMCL.pymcl
    :members:
    :undoc-members:
    :show-inheritance:
