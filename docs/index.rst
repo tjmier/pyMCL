@@ -11,7 +11,7 @@ Welcome to pyMCL's documentation!
    :caption: Contents:
 
    intro
-   my_pyMCL
+   pyMCL
    examples
 
 Indices and tables

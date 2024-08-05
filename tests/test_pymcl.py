@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 # Testing module
-from my_pyMCL import pymcl as mcl
+from pyMCL import pymcl as mcl
 
 # Example matrices and results from Dongen 2008 https://doi.org/10.1137/040608635
 test1_array = np.array(
