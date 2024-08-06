@@ -19,11 +19,13 @@ release = '0.1.0'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    "sphinx_rtd_theme",
-    "sphinx.ext.autodoc",
-    "sphinx.ext.viewcode",
-    "sphinx.ext.napoleon",
-    "sphinx_copybutton",
+    "sphinx_rtd_theme",     # Read the Docs theme
+    "sphinx.ext.autodoc",   # Include documentation from docstrings
+    "sphinx.ext.viewcode",  # Add links to highlighted source code
+    "sphinx.ext.napoleon",  # Parse Google-style docstrings
+    "sphinx_copybutton",    # Add copy buttons to code blocks
+    "nbsphinx",             # Execute Jupyter notebooks in documentation
+    "myst_parser",          # Use MyST markdown parser
 ]
 
 templates_path = ['_templates']

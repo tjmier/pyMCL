@@ -39,6 +39,10 @@ docs = [
     "sphinx",
     "sphinx_rtd_theme",
     "sphinx-copybutton",
+    "nbsphinx",
+    "IPython",
+    "ipykernel",
+    "myst-parser",
 ]
 
 [project.urls]

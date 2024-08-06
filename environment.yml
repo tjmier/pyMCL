@@ -10,8 +10,12 @@ dependencies:
   - sphinx
   - sphinx_rtd_theme
   - sphinx-copybutton
+  - nbsphinx
+  - IPython
+  - ipykernel
+  - myst-parser
 # pyMCL dependencies
   - numpy=2
   - pandas=2
-# Optional testing dependencies
+# Testing dependencies
   - pytest
